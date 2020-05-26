@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".FormActivity">
+
+    <EditText
+        android:id="@+id/editTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Титл"
+
+        style="@style/editTextStyle"
+        android:layout_marginTop="13dp"
+        android:textAlignment="center"
+               android:textStyle="italic"
+        />
+
+    <EditText
+        android:id="@+id/editDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:background="@drawable/edit_rounded"
+
+        android:layout_marginBottom="4dp"
+
+        android:hint="Описание"
+        android:layout_marginTop="4dp"
+        android:textAlignment="center"
+          android:padding="12dp"
+
+        />
+
+
+    <EditText
+
+        android:id="@+id/count"
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Это для красоты"
+
+style="@style/editTextStyle"
+        android:layout_marginTop="10sp"
+           android:textAlignment="center"
+        />
+
+
+    <Button
+        android:id="@+id/beka"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_rounded_gradient"
+        android:onClick="onClick"
+        android:text="save"
+        android:textColor="#FF6D00"
+        android:textSize="30sp"
+
+        />
+
+
+
+</LinearLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_height="match_parent"
+    tools:context=".Login.PhoneActivity">
+
+    <Button
+        android:id="@+id/onSmsClick"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/smsCode"
+
+
+        android:onClick="onCodeClic"
+        android:text="Продолжить"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"
+        android:background="#03A9F4"
+
+        />
+
+
+    <com.github.pinball83.maskededittext.MaskedEditText
+        android:id="@+id/lolloo"
+        android:inputType="phone"
+        android:padding="15dp"
+        android:gravity="center"
+
+        app:mask="+996 (***) *** ***"
+        app:notMaskedSymbol="*"
+        android:hint="enter number: 7XX XXX XXX"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"/>
+
+
+
+    <EditText
+        android:id="@+id/smsCode"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+
+
+        android:hint="Введите свой код"
+
+
+
+
+         android:layout_marginTop="200dp"
+        android:layout_centerInParent="false"
+        android:inputType="phone"
+        android:layout_height="40dp"
+        />
+
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lolloo"
+
+        android:text="Продолжить"
+        android:onClick="onClick"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+   android:id="@+id/lotiemyy"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:lottie_autoPlay="true"
+    app:lottie_loop="true"
+    app:lottie_rawRes="@raw/nnon"/>
+
+
+
+
+
+
+
+</RelativeLayout>
