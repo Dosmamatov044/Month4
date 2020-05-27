@@ -1,5 +1,6 @@
 package com.example.taskapp;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,9 +16,14 @@ import android.view.View;
 import android.widget.Button;
 
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.taskapp.models.Task;
+import com.example.taskapp.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +42,7 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
     final String SAVE_TEXT = "saved_text";
     final String LOAD_TEXT = "load_text";
     Button button;
-
+ TextView textView;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -47,6 +53,8 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
         editTitle = findViewById(R.id.editTitle);
         editDesc = findViewById(R.id.editDesc);
         button = findViewById(R.id.beka);
+
+        textView=findViewById(R.id.teeeexxt);
         loadText();
 
 
@@ -88,6 +96,33 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent();
         intent.putExtra("task", task);
         setResult(RESULT_OK, intent);
+
+
+        String uid1 = FirebaseAuth.getInstance().getUid();
+
+
+        Task task1 = new Task(title, desc);
+
+        FirebaseFirestore.getInstance().collection("users").document(uid1).set(task1).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+
+                if (task.isSuccessful()){
+
+                    Toast.makeText(FormActivity.this,"Успешно",Toast.LENGTH_LONG).show();
+
+                }else {Toast.makeText(FormActivity.this,"Ошибка",Toast.LENGTH_LONG).show();}
+
+
+
+            }
+        });
+
+
+
+
+
+
         finish();
     }
 
@@ -118,6 +153,10 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         saveText();
     }
+
+
+
+
 
 
 
