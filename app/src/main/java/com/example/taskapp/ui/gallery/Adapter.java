@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskapp.R;
+import com.example.taskapp.models.Task;
 import com.example.taskapp.ui.OnItemClickListener;
 
 import java.io.File;
@@ -22,9 +23,10 @@ public class Adapter extends RecyclerView.Adapter <Adapter.ViewHolder> {
     OnItemClickListener onItemClickListener;
 
 
-    public Adapter(ArrayList<File> List) {
-        this.List = List;
+    public Adapter(ArrayList<File> list) {
+        List = list;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

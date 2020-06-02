@@ -11,7 +11,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.taskapp.Login.PhoneActivity;
 import com.example.taskapp.ui.home.HomeFragment;
 
@@ -92,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+  //   ImageView imageView= navigationView.getHeaderView(0).findViewById(R.id.image1);
+      //  Glide.with(this).load(avatar).circleCrop().into(image1);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow,R.id.nav_Firestore)
                 .setDrawerLayout(drawer)

@@ -25,8 +25,8 @@ import java.util.ArrayList;
 
 
 public class GalleryFragment extends Fragment {
-  Adapter Adapter;
-    public ArrayList<File> galleryList = new ArrayList<>();
+  Adapter adapter;
+     ArrayList<File> galleryList = new ArrayList<>();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,8 +41,8 @@ public class GalleryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView = view.findViewById(R.id._gallery_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Adapter = new Adapter(galleryList);
-        recyclerView.setAdapter(Adapter);
+        adapter = new Adapter(galleryList);
+        recyclerView.setAdapter(adapter);
 
 
 
@@ -71,7 +71,7 @@ public class GalleryFragment extends Fragment {
 
         for (File file : folder.listFiles()) {
             galleryList.add(file);
-            Adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
         }
     }

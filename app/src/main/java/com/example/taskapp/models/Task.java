@@ -1,14 +1,17 @@
 package com.example.taskapp.models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 
 @Entity
-public class Task implements Serializable {
+public class Task  implements Serializable {
   @PrimaryKey(autoGenerate = true)
   private  long id;
     private String title;

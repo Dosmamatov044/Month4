@@ -14,11 +14,16 @@ private  String avatar;
     public User() {
     }
 
-    public User(String name, String age) {
+    public User(String name, String age,String avatar) {
         this.name = name;
         this.age = age;
-
+        this.avatar=avatar;
     }
+
+    public User(String name) {
+    }
+
+
 
     public String getName() {
         return name;

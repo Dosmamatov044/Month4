@@ -5,13 +5,14 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.text.LineBreaker;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -20,17 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.taskapp.models.Task;
-import com.example.taskapp.models.User;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+
 
 
 public class FormActivity extends AppCompatActivity implements View.OnClickListener {
@@ -88,10 +84,13 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
             task.setTitle(title);
             task.setDesc(desc);
 
+
             App.getInstance().getDatabase().taskDao().update(task);
+
         } else {
             task = new Task(title, desc);
             App.getInstance().getDatabase().taskDao().insert(task);
+            FirebaseFirestore.getInstance().collection("tasks").add(task);
         }
         Intent intent = new Intent();
         intent.putExtra("task", task);
@@ -103,21 +102,30 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
 
         Task task1 = new Task(title, desc);
 
+
+
+
+
+
         FirebaseFirestore.getInstance().collection("users").document(uid1).set(task1).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-
                 if (task.isSuccessful()){
 
                     Toast.makeText(FormActivity.this,"Успешно",Toast.LENGTH_LONG).show();
-
-                }else {Toast.makeText(FormActivity.this,"Ошибка",Toast.LENGTH_LONG).show();}
-
+                    FirebaseFirestore.getInstance().collection("tasks").add(task);
 
 
+
+                }else {Toast.makeText(FormActivity.this,"Ошибка",Toast.LENGTH_LONG).show();
+
+
+
+
+
+                }
             }
         });
-
 
 
 
@@ -127,7 +135,15 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+   //public Fragment getItem(Task task1) {
+  //  Bundle bundle=new Bundle();
+  //  bundle.putString("key", String.valueOf(task1));
+//    FirestoreFragment firestoreFragment=new FirestoreFragment();
+  //  firestoreFragment.setArguments(bundle);
 
+  //  Log.e("mogo",""+firestoreFragment);
+  //  return firestoreFragment;
+//}
 
 
     private void loadText() {
@@ -144,6 +160,7 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor ed = preferences.edit();
         ed.putString(SAVE_TEXT, editTitle.getText().toString());
         ed.putString(LOAD_TEXT, editDesc.getText().toString());
+
         ed.commit();
         Toast.makeText(FormActivity.this, "Ваш текст Сохранен!", Toast.LENGTH_SHORT).show();
     }
@@ -152,6 +169,7 @@ public class FormActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         saveText();
+
     }
 
 

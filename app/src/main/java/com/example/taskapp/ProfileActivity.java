@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,13 +17,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.taskapp.models.User;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +34,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,10 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView image1;
 
     Button button1;
-
+ProgressBar progressBar;
      private static final int PICK_IMAGE=100;
   private Uri imageUri;
-
+  private String avatarUrl;
 
 
     @Override
@@ -54,11 +61,11 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-        button1=findViewById(R.id.buuton);
+progressBar=findViewById(R.id.Progress_bar);
 
         edit_name = findViewById(R.id.edit_name);
         edit_age = findViewById(R.id.edit_age);
-
+        progressBar.setVisibility(View.GONE);
 //        getData();
         getData2();
 
@@ -73,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
       public void onClick(View v) {
         openGallery();
       }
-      });
+       });
 
 
 
@@ -85,7 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         String name = edit_name.getText().toString().trim();
                                         String age = edit_age.getText().toString().trim();
 
-                                        User users = new User(name, age);
+                                        User users = new User(name, age,avatarUrl);
 
 
                                         FirebaseFirestore.getInstance().collection("users")
@@ -130,27 +137,31 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
         private void openGallery() {
-       Intent gallery=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+
+
+       //Intent gallery=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+      Intent gallery=new Intent();
+      gallery.setType("image/*");
+      gallery.setAction(Intent.ACTION_PICK);
        startActivityForResult(gallery,PICK_IMAGE);
-
-
-
-           }
+    }
 
      @Override
       protected void onActivityResult(int requestCode,int resultCode,Intent data) {
 
 
         super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode==RESULT_OK && requestCode==PICK_IMAGE ){
+    if (resultCode==RESULT_OK && requestCode==PICK_IMAGE &&data.getData()!=null){
 
 
-if(image1!=null) {
+//if(image1!=null) {
 
-    imageUri = data.getData();
+    //imageUri = data.getData();
 
+    Glide.with(this).load(data.getData()).circleCrop().into(image1);
+    //image1.setImageURI(data.getData());
+upload(data.getData());
 
-    image1.setImageURI(imageUri);
 }
 
 
@@ -158,9 +169,68 @@ if(image1!=null) {
 
     }
 
+  //  }
+
+    private void upload(Uri data) {
+        progressBar.setVisibility(View.VISIBLE);
+        String uid=FirebaseAuth.getInstance().getUid();                                              //
+        final StorageReference reference= FirebaseStorage.getInstance().getReference().child(uid+"avatar.jpg");
+        UploadTask uploadTask=reference.putFile(data);
+       uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+
+                return reference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if (task.isSuccessful()){
+
+                   // Toast.makeText(ProfileActivity.this,"успешно",Toast.LENGTH_LONG).show();
+                 Uri downloadUrl=task.getResult();
+                 Log.e("Profile","downloadUrl"+downloadUrl);
+                avatarUrl=downloadUrl.toString();
+                 upDateAvatarInfo(downloadUrl);
+                }else {
+                    Toast.makeText(ProfileActivity.this,"провал",Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+
+
+
+       });
+
+
+
     }
 
+    private void upDateAvatarInfo(Uri downloadUrl) {
+        String uid=FirebaseAuth.getInstance().getUid();
+FirebaseFirestore.getInstance().collection("users").document(uid).update("avatar",downloadUrl.toString())
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()){
 
+                    Toast.makeText(ProfileActivity.this,"успешно",Toast.LENGTH_LONG).show();
+
+
+
+                }else {
+                    Toast.makeText(ProfileActivity.this,"провал",Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
+
+
+    }
 
 
     private void getData2() {
@@ -174,10 +244,17 @@ if(image1!=null) {
                             User users = documentSnapshot.toObject(User.class);
                             edit_name.setText(users.getName());
                             edit_age.setText(users.getAge());
+                          showImage(users.getAvatar());
+
 
                         }
                     }
                 });
+    }
+
+    private void showImage(String avatar) {
+        Glide.with(this).load(avatar).circleCrop().into(image1);
+
     }
 
     //public void onClick(View view) {
