@@ -79,8 +79,8 @@ LoadData();
 
            FirebaseFirestore.getInstance().collection("tasks").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                @Override
-               public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-              list.addAll(queryDocumentSnapshots.toObjects(Task.class));
+               public void onSuccess(QuerySnapshot Snapshots) {
+              list.addAll(Snapshots.toObjects(Task.class));
               Adapter.notifyDataSetChanged();
 
                }
